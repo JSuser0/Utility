@@ -1,6 +1,6 @@
 local functions = { };
 
-function  function:GetNearestPlayer()
+function functions:GetNearestPlayer()
     local distances = { };
 
     for _, player in pairs(players:GetPlayers()) do
