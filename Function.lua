@@ -12,9 +12,18 @@ local character = client.Character
 
 local rootPart = character:WaitForChild("HumanoidRootPart")
 
+local function Update()
+    pcall(function()
+        character = client.Character
+        rootPart = character:WaitForChild("HumanoidRootPart")
+    end)
+end
+
 local functions = { };
 
 function functions:GetNearestPlayer()
+    Update()
+    
     local distances = { };
 
      for _, player in pairs(players:GetPlayers()) do
