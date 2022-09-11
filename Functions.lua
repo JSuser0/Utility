@@ -22,7 +22,7 @@ end
 local functions = { };
 
 function functions:GetNearestPlayer()
-    Update()
+    task.defer(Update)
     
     local distances = { };
 
