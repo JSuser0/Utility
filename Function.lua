@@ -1,3 +1,18 @@
+-- [ SERVICES ] --
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local networkClient = game:GetService("NetworkClient")
+local insertService = game:GetService("InsertService")
+local httpService = game:GetService("HttpService")
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
+
+-- [ VARIABLES ] --
+local client = players.LocalPlayer
+local character = client.Character
+
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+
 local functions = { };
 
 function functions:GetNearestPlayer()
