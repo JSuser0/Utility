@@ -10,6 +10,7 @@ local players = game:GetService("Players")
 local client = players.LocalPlayer
 local character = client.Character
 
+local camera = workspace.CurrentCamera
 local mouse = client:GetMouse()
 
 local rootPart = character:WaitForChild("HumanoidRootPart")
@@ -52,16 +53,19 @@ function functions:GetNearestPlayerByMouse()
     task.defer(Update)
     
     local distances = { };
-
+    
      for _, player in pairs(players:GetPlayers()) do
          if (player.Name == client.Name or not player.Character) then continue end
     
          pcall(function()
             local playerRootPart = player.Character.HumanoidRootPart
     
+            local vector, on_screen = camera:WorldToScreenPoint(playerRootPart.Position)
+            if (not on_screen) then return end
+
             table.insert(distances, {
                 player.Character,
-                (mouse.Hit.Position - playerRootPart.Position).Magnitude or math.huge
+                (Vector2.new(mouse.X, mouse.Y) - Vector2.new(vector.X, vector.Y)).Magnitude or math.huge
             })
         end)
     end
