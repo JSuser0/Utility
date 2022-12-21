@@ -10,20 +10,44 @@ function mongodb:Init(mongourl)
 		--print("databae init complete")
 		local dbobj = {}
 		dbobj.headers = {
+			["Content-Type"] = 	"application/json";
 			["x-mongodb-url"] = mongourl;
-			["x-mongodb-db"] = database;
+			["x-mongodb-db"] = database
 		}
 		function dbobj:GetCollection(collection)
 			--print("collection init complete")
 			local collobj = {}
 			function collobj.find(query)
-				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/find",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+				return syn.request({
+					Url = mongobj.baseurl.."db/"..collection.."/find";
+					Method = "POST";
+
+					Headers = dbobj.headers;
+
+					Body = http:JSONEncode(query)
+				})
 			end
+			
 			function collobj.bulkWrite(query)
-				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/bulkWrite",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+				return syn.request({
+					Url = mongobj.baseurl.."db/"..collection.."/bulkWrite";
+					Method = "POST";
+
+					Headers = dbobj.headers;
+
+					Body = http:JSONEncode(query)
+				})
 			end
+			
 			function collobj.insertMany(query)
-				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/insertMany",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+				return syn.request({
+					Url = mongobj.baseurl.."db/"..collection.."/insertMany";
+					Method = "POST";
+
+					Headers = dbobj.headers;
+
+					Body = http:JSONEncode(query)
+				})
 			end
 
 			function collobj.insertOne(document)
