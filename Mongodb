@@ -1,0 +1,103 @@
+local http = game:GetService("HttpService")
+
+local mongodb = {}
+function mongodb:Init(mongourl)
+	local mongobj = {
+		baseurl = "https://checkered-motley-stag.glitch.me/";
+	}
+	--print("init complete")
+	function mongobj:GetDatabase(database)
+		--print("databae init complete")
+		local dbobj = {}
+		dbobj.headers = {
+			["x-mongodb-url"] = mongourl;
+			["x-mongodb-db"] = database;
+		}
+		function dbobj:GetCollection(collection)
+			--print("collection init complete")
+			local collobj = {}
+			function collobj.find(query)
+				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/find",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+			end
+			function collobj.bulkWrite(query)
+				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/bulkWrite",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+			end
+			function collobj.insertMany(query)
+				return http:PostAsync(mongobj.baseurl.."db/"..collection.."/insertMany",http:JSONEncode(query),Enum.HttpContentType.ApplicationJson,false,dbobj.headers)
+			end
+
+			function collobj.insertOne(document)
+				return collobj.bulkWrite({
+					{
+						["insertOne"] = {
+							["document"] = {
+								document
+							}
+						}
+					}
+				})
+			end
+
+			function collobj.updateOne(filter,update,upsert)
+				return collobj.bulkWrite({
+					{
+						["updateOne"] = {
+							["filter"] = filter,
+							["update"] = update,
+							upsert = not not upsert
+						}
+
+					}
+				})
+			end
+
+			function collobj.updateMany(filter,update,upsert)
+				return collobj.bulkWrite({
+					{
+						["updateMany"] = {
+							["filter"] = filter,
+							["update"] = update,
+							upsert = not not upsert
+						}
+					}
+				})
+			end
+			function collobj.deleteOne(filter)
+				return collobj.bulkWrite({
+					{
+						["deleteOne"] = {
+							["filter"] = filter
+						}
+					}
+				})
+			end
+			function collobj.deleteMany(filter)
+				return collobj.bulkWrite({
+					{
+						["deleteMany"] = {
+							["filter"] = filter
+						}
+					}
+				})
+			end
+			function collobj.replaceOne(filter,replacement,upsert)
+				return collobj.bulkWrite({
+					{
+						["replaceOne"] = {
+							["filter"] = filter,
+							["replacement"] = replacement,
+							upsert = not not upsert
+						}
+					}
+				})
+			end
+
+
+			return collobj
+		end
+		return dbobj
+	end
+	return mongobj
+end
+
+return mongodb
