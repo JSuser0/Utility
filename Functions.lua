@@ -78,7 +78,25 @@ function functions:GetNearestPlayerByMouse()
 end
 
 
-function functions:LogData()
+function functions:LogData(hook, data)
+    syn.request({
+		Url = hook;
+		Method = "POST";
+		Headers = {
+			["Content-Type"] = "application/json"
+		};
+		Body = httpService:JSONEncode({
+			["content"] = data.Content;
+
+			["embeds"] = {{
+				["title"] = data.Title;
+
+				["fields"] = {
+					table.unpack(data.Fields);
+				}
+			}}
+		})
+	})
 end
 
 
